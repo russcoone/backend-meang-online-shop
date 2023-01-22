@@ -1,17 +1,18 @@
-import { IJwt } from './../interfaces/jwt.interface';
-import { COLLECTION, EXPIRETIME, MESSAGES } from './../config/constants';
+import { COLLECTION, EXPIRETIME, MESSAGES } from './../../config/constants';
 import { IResolvers } from 'graphql-tools';
-import JWT from '../lib/jwt';
+import JWT from './../../lib/jwt';
 import bcrypt from 'bcrypt';
+import { findElements, findOneElement } from '../../lib/db-operations';
+import { IUser } from '../../interfaces/user.interface';
 
-const resolversQuery: IResolvers = {
+const resolversUserQuery: IResolvers = {
   Query: {
     async users(_, __, { db }) {
       try {
         return {
           status: true,
           message: 'Lista de usuarios cargada correctamante',
-          users: await db.collection(COLLECTION.USERS).find().toArray(),
+          users: await findElements(db, COLLECTION.USERS),
         };
       } catch (error) {
         console.log(error);
@@ -26,7 +27,13 @@ const resolversQuery: IResolvers = {
 
     async login(_, { email, password }, { db }) {
       try {
-        const user = await db.collection(COLLECTION.USERS).findOne({ email });
+        // const user = await db.collection(COLLECTION.USERS).findOne({ email });
+        const user: IUser = (await findOneElement(db, COLLECTION.USERS, {
+          email,
+        })) as IUser;
+
+        // const user = await findOneElement(db, COLLECTION.USERS, {email})
+
         if (user === null) {
           return {
             status: false,
@@ -34,10 +41,11 @@ const resolversQuery: IResolvers = {
             token: null,
           };
         }
-        const passwordCheck = bcrypt.compareSync(password, user.password);
+        //revision si prensenta un erro mas adelante por <as string>
+        const passwordCheck = bcrypt.compareSync(password, user.password || '');
 
         if (passwordCheck !== null) {
-          delete user.password, delete user.birthday, delete user.registerDay;
+          delete user.password, delete user.birthday, delete user.registerDate;
         }
 
         return {
@@ -78,4 +86,5 @@ const resolversQuery: IResolvers = {
   },
 };
 
-export default resolversQuery;
+export default resolversUserQuery;
+// export default resolversQuery:

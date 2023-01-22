@@ -1,14 +1,16 @@
-import { COLLECTION } from './../config/constants';
+import { findOneElement, insertOneElement } from './../../lib/db-operations';
+import { COLLECTION } from './../../config/constants';
 import { IResolvers } from 'graphql-tools';
 import bcrypt from 'bcrypt';
+import { asignDocumentId } from '../../lib/db-operations';
 
-const resolversMutation: IResolvers = {
+const resolversUserMutation: IResolvers = {
   Mutation: {
     async register(_, { user }, { db }) {
       // comprovar que el usuario no existe
-      const userCheck = await db
-        .collection(COLLECTION.USERS)
-        .findOne({ email: user.email });
+      const userCheck = await findOneElement(db, COLLECTION.USERS, {
+        email: user.email,
+      });
       if (userCheck !== null) {
         return {
           status: false,
@@ -16,21 +18,10 @@ const resolversMutation: IResolvers = {
           user: null,
         };
       }
-
-      //comprovar el ultimo usuario registrado para asignar ID
-      const lastUser = await db
-        .collection(COLLECTION.USERS)
-        .find()
-        .limit(1)
-        .sort({ registerDate: -1 })
-        .toArray();
-
-      if (lastUser.length === 0) {
-        user.id = 1;
-      } else {
-        // por si marca un error devemos cambiar esta opcion y ver lo de la clase 93
-        user.id = lastUser[0].id + 1;
-      }
+      user.id = await asignDocumentId(db, COLLECTION.USERS, {
+        key: 'registerDate',
+        order: -1,
+      });
 
       //asignar la fecha en formato ISO en la propiedad regidter
       user.registerDate = new Date().toISOString();
@@ -39,9 +30,7 @@ const resolversMutation: IResolvers = {
 
       //guardar el documento (register en la coleccion)
 
-      return await db
-        .collection(COLLECTION.USERS)
-        .insertOne(user)
+      return await insertOneElement(db, COLLECTION.USERS, user)
         .then(async () => {
           return {
             status: true,
@@ -60,4 +49,4 @@ const resolversMutation: IResolvers = {
     },
   },
 };
-export default resolversMutation;
+export default resolversUserMutation;
