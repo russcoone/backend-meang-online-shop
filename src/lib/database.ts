@@ -26,8 +26,11 @@
 
 import { Db, MongoClient } from 'mongodb';
 import chalk from 'chalk';
+import { Mongoose } from 'mongoose';
+
 class Database {
   db?: Db;
+
   async init(): Promise<Db | undefined> {
     console.log('================DATABASE================');
 
