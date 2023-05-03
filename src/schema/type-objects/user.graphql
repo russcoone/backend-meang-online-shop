@@ -10,8 +10,9 @@ type User {
     name: String!
     lastname: String!
     email: String!
-    password: String!
+    password: String
     registerDate: String!
     birthday: String!
-    role: Role!
+    role: String
+
 }
