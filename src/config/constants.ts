@@ -9,8 +9,6 @@ export const SECRET_KEY =
 
 export enum COLLECTION {
   USERS = 'users',
-  GENRES = 'genres',
-  // GENRE = 'genre',
 }
 
 export enum MESSAGES {

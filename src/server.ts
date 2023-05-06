@@ -8,7 +8,6 @@ import schema from './schema';
 import expressPlayground from 'graphql-playground-middleware-express';
 import { ApolloServer } from 'apollo-server-express';
 import Database from './lib/database';
-
 //configuracion de las variables de enterno (lectura)
 
 if (process.env.NODE_ENV !== 'production') {
@@ -57,5 +56,4 @@ async function init() {
     () => console.log(`http://localhost:${PORT} API MEANG - Onli Shop`)
   );
 }
-
 init();

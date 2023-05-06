@@ -1,4 +1,4 @@
-import { Db } from 'mongodb';
+import { Db, SortDirection } from 'mongodb';
 
 /*
 Obtener el Id que vamos a utilizar el nuevo usuario
@@ -10,22 +10,25 @@ Obtener el Id que vamos a utilizar el nuevo usuario
 export const asignDocumentId = async (
   database: Db,
   collection: string,
-  sort: object = { registerDate: -1 }
-  //obserbacion
+  sort: { key: string; order: SortDirection } = {
+    //obserbacion
+    key: 'registerDate',
+    order: -1,
+  }
 ) => {
   //comprovar el ultimo usuario registrado para asignar ID
   const lastElement = await database
     .collection(collection)
     .find()
+    .sort(sort.key, sort.order as SortDirection)
     .limit(1)
-    .sort(sort)
     .toArray();
 
   if (lastElement.length === 0) {
-    return '1';
+    return 1;
   } else {
     // por si marca un error devemos cambiar esta opcion y ver lo de la clase 93
-    return String(+lastElement[0].id + 1);
+    return lastElement[0].id + 1;
   }
 };
 
@@ -51,23 +54,6 @@ export const insertManyElements = async (
   document: Array<object>
 ) => {
   return await database.collection(collection).insertMany(document);
-};
-export const updateOneElement = async (
-  database: Db,
-  collection: string,
-  filter: object,
-  updateObject: object
-) => {
-  return await database
-    .collection(collection)
-    .updateOne(filter, { $set: updateObject });
-};
-export const deleteOneElement = async (
-  database: Db,
-  collection: string,
-  filter: object = {}
-) => {
-  return await database.collection(collection).deleteOne(filter);
 };
 
 export const findElements = async (
