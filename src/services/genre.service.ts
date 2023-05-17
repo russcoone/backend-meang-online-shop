@@ -8,12 +8,19 @@ import slugify from 'slugify';
 
 class GenreService extends ResolverOperationsService {
   collection = COLLECTION.GENRES;
-  constructor(root: object, variables: IVariables, context: IContextData) {
+  constructor(root: object, variables: object, context: IContextData) {
     super(root, variables, context);
   }
   async items() {
-    const result = await this.list(this.collection, 'generos');
+    const page = this.getVariables().pagination?.page;
+    const itemsPage = this.getVariables().pagination?.itemsPage;
+    const result = await this.list(this.collection, 'generos', page, itemsPage);
+
+    console.log(this.getVariables().pagination);
+    console.log(page, itemsPage);
+
     return {
+      info: result.info,
       status: result.status,
       message: result.message,
       genres: result.items,

@@ -8,13 +8,23 @@ import bcrypt from 'bcrypt';
 
 class UsersService extends ResolverOperationsService {
   private collection = COLLECTION.USERS;
-  constructor(root: object, variables: IVariables, context: IContextData) {
+  //revisar si presenta a futuro un erro antes tenia IVariables
+  constructor(root: object, variables: object, context: IContextData) {
     super(root, variables, context);
   }
   // Lista de usuarios
   async items() {
-    const result = await this.list(this.collection, 'usuarios');
+    const page = this.getVariables().pagination?.page;
+    const itemsPage = this.getVariables().pagination?.itemsPage;
+
+    const result = await this.list(
+      this.collection,
+      'usuarios',
+      page,
+      itemsPage
+    );
     return {
+      info: result.info,
       status: result.status,
       message: result.message,
       users: result.items,
