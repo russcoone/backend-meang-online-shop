@@ -40,7 +40,6 @@ class ResolverOperationsService {
     itemsPage: number = 15
   ) {
     try {
-      console.log(page, itemsPage);
       const paginationData = await pagination(
         this.getDb(),
         collection,

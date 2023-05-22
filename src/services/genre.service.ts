@@ -16,9 +16,6 @@ class GenreService extends ResolverOperationsService {
     const itemsPage = this.getVariables().pagination?.itemsPage;
     const result = await this.list(this.collection, 'generos', page, itemsPage);
 
-    console.log(this.getVariables().pagination);
-    console.log(page, itemsPage);
-
     return {
       info: result.info,
       status: result.status,
