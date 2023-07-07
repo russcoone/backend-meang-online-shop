@@ -4,8 +4,9 @@ input UserInput {
     name: String!
     lastname: String!
     email: String!
-    password: String!
+    password: String
     birthday: String!
     role: Role=CLINET
+    active: Boolean
 
 }

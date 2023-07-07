@@ -1,6 +1,6 @@
 import { loadFilesSync } from '@graphql-tools/load-files';
 import { filter } from 'compression';
-import { Db } from 'mongodb';
+import { Db, InsertOneResult, UpdateResult } from 'mongodb';
 import { IContextData } from '../interfaces/context-data.interface';
 import { IVariables } from '../interfaces/variable.interface';
 import {
@@ -11,6 +11,7 @@ import {
   updateOneElement,
 } from '../lib/db-operations';
 import { pagination } from '../lib/pagiantion';
+import { StringLiteralType } from 'typescript';
 
 class ResolverOperationsService {
   private root: object;
@@ -26,8 +27,9 @@ class ResolverOperationsService {
     return this.context;
   }
   protected getDb(): Db {
-    return this.context.db!;
+    return this.context.db!; // revisar este punto por algunos errores
   }
+
   //Listainformacion
   protected getVariables(): IVariables {
     return this.variables;
@@ -37,14 +39,16 @@ class ResolverOperationsService {
     collection: string,
     listElement: string,
     page: number = 1,
-    itemsPage: number = 15
+    itemsPage: number = 15,
+    filter: object = { active: { $ne: false } }
   ) {
     try {
       const paginationData = await pagination(
         this.getDb(),
         collection,
         page,
-        itemsPage
+        itemsPage,
+        filter
       );
 
       return {
@@ -57,7 +61,12 @@ class ResolverOperationsService {
         },
         status: true,
         message: `Lista de ${listElement} correctamente cargada`,
-        items: await findElements(this.getDb(), collection, {}, paginationData),
+        items: await findElements(
+          this.getDb(),
+          collection,
+          filter,
+          paginationData
+        ),
       };
     } catch (error) {
       return {
@@ -103,8 +112,8 @@ class ResolverOperationsService {
   protected async add(collection: string, document: object, item: string) {
     try {
       return await insertOneElement(this.getDb(), collection, document).then(
-        (res) => {
-          if (res.result.ok === 1) {
+        (res: InsertOneResult) => {
+          if (res.insertedId) {
             return {
               status: true,
               message: `Añadido correctamente ${item}`,
@@ -138,8 +147,8 @@ class ResolverOperationsService {
         collection,
         filter,
         objectUpdate
-      ).then((res) => {
-        if (res.result.nModified === 1) {
+      ).then((res: UpdateResult) => {
+        if (res.modifiedCount === 1) {
           return {
             status: true,
             message: `Elemento ${item} actulizado correctamente`,

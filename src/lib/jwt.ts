@@ -16,6 +16,10 @@ class JWT {
   }
 
   verify(token: string) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('token:::', token);
+      console.log('Verifiy-key', this.secretKey);
+    }
     try {
       return jwt.verify(token, this.secretKey);
     } catch (error) {

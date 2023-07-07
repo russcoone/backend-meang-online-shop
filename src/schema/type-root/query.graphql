@@ -1,8 +1,8 @@
 type Query {
-    users (page: Int = 1, itemsPage: Int = 15): ResultUsers
+    users (page: Int = 1, itemsPage: Int = 20): ResultUsers
     login(email: String!, password: String!): ResultLogin
     me: ResultUser
-    genres (page: Int = 1, itemsPage: Int = 15): ResultGenre
+    genres (page: Int = 1, itemsPage: Int = 20): ResultGenre
     genre(id: ID!): ResultGenre
 }
 

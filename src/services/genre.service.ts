@@ -1,7 +1,5 @@
-import { filter } from 'compression';
 import { COLLECTION } from '../config/constants';
 import { IContextData } from '../interfaces/context-data.interface';
-import { IVariables } from '../interfaces/variable.interface';
 import { asignDocumentId, findOneElement } from '../lib/db-operations';
 import ResolverOperationsService from './resolver-operations.service';
 import slugify from 'slugify';
@@ -33,31 +31,31 @@ class GenreService extends ResolverOperationsService {
   }
   async insert() {
     const genre = this.getVariables().genre;
-    //comprovar que no esta en blanco  ni es indefinido
+
     if (!this.checkData(genre || '')) {
       return {
         status: false,
-        message: 'El genero no se haespecificado correctamente',
+        message: 'El genero no se ha espacificado correctamente',
         genre: null,
       };
     }
-
-    // comprovar que no existe
     if (await this.checkInDatabase(genre || '')) {
       return {
         status: false,
-        message: 'El genero existe ne la base de datos intenta con otro genro',
+        message: 'El genero ya existe',
         genre: null,
       };
     }
 
-    // si valida las opciones anteriores veir qui y crea el contenido
     const genreObject = {
-      id: await asignDocumentId(this.getDb(), this.collection, { id: -1 }),
+      id: await asignDocumentId(this.getDb(), this.collection, {
+        key: '_id',
+        order: -1,
+      }),
       name: genre,
       slug: slugify(genre || '', { lower: true }),
     };
-    const result = await this.add(this.collection, genreObject, 'generos');
+    const result = await this.add(this.collection, genreObject, 'género');
     return {
       status: result.status,
       message: result.message,
@@ -74,10 +72,10 @@ class GenreService extends ResolverOperationsService {
         genre: null,
       };
     }
-    if (!this.checkData(genre || '')) {
+    if (!this.checkData(String(id) || '')) {
       return {
         status: false,
-        message: 'El genero no se ha especificado correctamente',
+        message: 'El  ID genero no se especifico correctamente',
         genre: null,
       };
     }
@@ -85,12 +83,11 @@ class GenreService extends ResolverOperationsService {
       name: genre,
       slug: slugify(genre || '', { lower: true }),
     };
-
     const result = await this.update(
       this.collection,
       { id },
       objectUpdate,
-      'generos'
+      'genero'
     );
     return {
       status: result.status,
@@ -113,9 +110,31 @@ class GenreService extends ResolverOperationsService {
       message: result.message,
     };
   }
+  async block() {
+    const id = this.getVariables().id;
+    if (!this.checkData(String(id) || '')) {
+      return {
+        status: false,
+        message: 'El  ID del genero no se haespecificado correctamente',
+        genre: null,
+      };
+    }
+    const result = await this.update(
+      this.collection,
+      { id },
+      { active: false },
+      'generos'
+    );
+    return {
+      status: result.status,
+      message: result.status
+        ? 'Bloqueado correctamente'
+        : 'No se ha bloqueado correctamente',
+    };
+  }
 
   private checkData(value: string) {
-    return value === '' || value === undefined ? false : true;
+    return value === ' ' || value === undefined ? false : true;
   }
 
   private async checkInDatabase(value: string) {
@@ -124,5 +143,92 @@ class GenreService extends ResolverOperationsService {
     });
   }
 }
+
+//  const genre = this.getVariables().genre;
+// //comprovar que no esta en blanco  ni es indefinido
+// if (!this.checkData(genre || '')) {
+//   return {
+//     status: false,
+//     message: 'El genero no se haespecificado correctamente',
+//     genre: null,
+//   };
+// }
+// comprovar que no existe
+// if (await this.checkInDatabase(genre || '')) {
+//   return {
+//     status: false,
+//     message: 'El genero existe ne la base de datos intenta con otro genro',
+//     genre: null,
+//   };
+// }
+// si valida las opciones anteriores veir qui y crea el contenido
+//   const genreObject = {
+//     id: await asignDocumentId(this.getDb(), this.collection, { id: -1 }),
+//     name: genre,
+//     slug: slugify(genre || '', { lower: true }),
+//   };
+//   const result = await this.add(this.collection, genreObject, 'genero');
+//   return {
+//     status: result.status,
+//     message: result.message,
+//     genre: result.item,
+//   };
+// }
+// async modify() {
+//    const id = this.getVariables().id;
+//    const genre = this.getVariables().genre;
+//    if (!this.checkData(String(id) || '')) {
+//      return {
+//        status: false,
+//        message: 'El  ID delgenero no se haespecificado correctamente',
+//        genre: null,
+//      };
+//   }
+// if (!this.checkData(genre || '')) {
+//    return {
+//      status: false,
+//      message: 'El genero no se ha especificado correctamente',
+//      genre: null,
+//    };
+//  }
+// const objectUpdate = {
+//   name: genre,
+//   slug: slugify(genre || '', { lower: true }),
+// };
+//   const result = await this.update(
+//     this.collection,
+//     { id },
+//     objectUpdate,
+//     'genero'
+//   );
+//   return {
+//     status: result.status,
+//     message: result.message,
+//     genre: result.item,
+//   };
+// }
+// async delete() {
+//   const id = this.getVariables().id;
+//   if (!this.checkData(String(id) || '')) {
+//     return {
+//       status: false,
+//       message: 'El  ID del genero no se haespecificado correctamente',
+//       genre: null,
+//     };
+//   }
+//   const result = await this.del(this.collection, { id }, 'generos');
+//   return {
+//     status: result.status,
+//     message: result.message,
+//   };
+// }
+//   private checkData(value: string) {
+//     return value === '' || value === undefined ? false : true;
+//   }
+//   private async checkInDatabase(value: string) {
+//     return await findOneElement(this.getDb(), this.collection, {
+//       name: value,
+//     });
+//   }
 
 export default GenreService;

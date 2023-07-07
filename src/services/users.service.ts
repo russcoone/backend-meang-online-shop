@@ -1,6 +1,6 @@
 import { COLLECTION, EXPIRETIME, MESSAGES } from '../config/constants';
 import { IContextData } from '../interfaces/context-data.interface';
-import { IVariables } from '../interfaces/variable.interface';
+import { IUser } from '../interfaces/user.interface';
 import { asignDocumentId, findOneElement } from '../lib/db-operations';
 import JWT from '../lib/jwt';
 import ResolverOperationsService from './resolver-operations.service';
@@ -54,9 +54,13 @@ class UsersService extends ResolverOperationsService {
       const variables = this.getVariables().user;
 
       // const user = await db.collection(COLLECTION.USERS).findOne({ email });
-      const user = await findOneElement(this.getDb(), this.collection, {
-        email: variables?.email,
-      });
+      const user: IUser = ((await findOneElement(
+        this.getDb(),
+        this.collection,
+        {
+          email: variables?.email,
+        }
+      )) as unknown) as IUser;
 
       // const user = await findOneElement(db, COLLECTION.USERS, {email})
 
@@ -132,9 +136,9 @@ class UsersService extends ResolverOperationsService {
       };
     }
     user!.id = await asignDocumentId(this.getDb(), this.collection, {
-      registerDate: -1,
-      // key: 'registerDate',
-      // order: -1,
+      // registerDate: -1,
+      key: 'registerDate',
+      order: 1,
     });
 
     //asignar la fecha en formato ISO en la propiedad regidter
@@ -183,6 +187,31 @@ class UsersService extends ResolverOperationsService {
       status: result.status,
       message: result.message,
     };
+  }
+  async block() {
+    const id = this.getVariables().id;
+    if (!this.checkData(String(id) || '')) {
+      return {
+        status: false,
+        message: 'El ID del usuario no se ha especificado correctamente',
+        user: null,
+      };
+    }
+    const result = await this.update(
+      this.collection,
+      { id },
+      { active: false },
+      'usuario'
+    );
+    return {
+      status: result.status,
+      message: result.status
+        ? 'Usuario bloqueado'
+        : 'Error al bloquear el usuario',
+    };
+  }
+  private checkData(value: string) {
+    return value === '' || value === undefined ? false : true;
   }
 }
 
