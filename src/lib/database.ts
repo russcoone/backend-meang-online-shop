@@ -1,28 +1,13 @@
-// import chalk from 'chalk';
-// import { MongoClient } from 'mongodb';
+// // const mongoDb = require('mongodb');
+// const mongoClient = mongoDb.MongoClient;
+// // const serverUrl = "mongodb://127.0.0.1:27017/";
+// // const dbName = "sample_db";
 
-// class Database {
-//   async init() {
-//     const MONGO_DB =
-//       process.env.DATABASE ||
-//       'mongodb+srv://root:Casas7897419632@cluster0.eyr6v.mongodb.net/test';
-//     const client = await MongoClient.connect(MONGO_DB, {
-//       useNewUrlParser: true,
-//       useUnifiedTopology: true,
-//     });
-
-//     const db = client.db();
-
-//     if (client.isConnected()) {
-//       console.log(`===================DATA BASE======================`);
-//       console.log(`STATUS ${chalk.greenBright('ONLINE')}`);
-//       console.log(`DATABASE ${chalk.greenBright(db.databaseName)}`);
-//     }
-//     return db;
-//   }
-// }
-
-// export default Database;
+// mongoClient.connect(
+//   serverUrl,
+//   { useNewUrlParser: true, useUnifiedTopology: true },
+//   function (err, db) {}
+// );
 
 import { Db, MongoClient } from 'mongodb';
 import chalk from 'chalk';
@@ -32,19 +17,22 @@ class Database {
   db?: Db;
 
   async init(): Promise<Db | undefined> {
-    console.log('================DATABASE================');
-
     try {
       const MONGODB =
         process.env.DATABASE ||
         'mongodb://localhost:27017/jwt-login-register-21';
-      const mongoClient = await MongoClient.connect(MONGODB);
+      const mongoClient = await MongoClient.connect(MONGODB, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
 
       this.db = mongoClient.db();
       // Mensaje visual con el estado
+      console.log('================DATABASE================');
       console.log(`STATUS: ${chalk.greenBright('ONLINE')}`);
       console.log(`DATABASE: ${chalk.greenBright(this.db.databaseName)}`);
     } catch (error) {
+      console.log('================DATABASE================');
       console.log(`ERROR: ${error}`);
       console.log(`STATUS: ${chalk.redBright('OFFLINE')}`);
       console.log(`DATABASE: ${chalk.redBright(this.db?.databaseName)}`);

@@ -11,6 +11,7 @@ export enum COLLECTION {
   USERS = 'users',
   GENRES = 'genres',
   // GENRE = 'genre',
+  TAGS = 'tags',
 }
 
 export enum MESSAGES {
@@ -23,4 +24,13 @@ export enum EXPIRETIME {
   M1 = H1 / 4,
   M20 = H1 / 3,
   D3 = H24 * 3,
+}
+export enum ACTIVE_VALUES_FILTER {
+  ALL = 'ALL',
+  INACTIVE = 'INACTIVE',
+  ACTIVE = 'ACTIVE',
+}
+
+export enum SUBSCRIPTIONS_EVENT {
+  UPDATE_STOCK_PRODUCT = 'UPDATE_STOCK_PRODUCT',
 }

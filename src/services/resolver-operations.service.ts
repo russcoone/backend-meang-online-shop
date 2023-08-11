@@ -1,6 +1,6 @@
 import { loadFilesSync } from '@graphql-tools/load-files';
 import { filter } from 'compression';
-import { Db, InsertOneResult, UpdateResult } from 'mongodb';
+import { Db } from 'mongodb';
 import { IContextData } from '../interfaces/context-data.interface';
 import { IVariables } from '../interfaces/variable.interface';
 import {
@@ -112,8 +112,8 @@ class ResolverOperationsService {
   protected async add(collection: string, document: object, item: string) {
     try {
       return await insertOneElement(this.getDb(), collection, document).then(
-        (res: InsertOneResult) => {
-          if (res.insertedId) {
+        (res) => {
+          if (res.result.ok === 1) {
             return {
               status: true,
               message: `Añadido correctamente ${item}`,
@@ -147,8 +147,8 @@ class ResolverOperationsService {
         collection,
         filter,
         objectUpdate
-      ).then((res: UpdateResult) => {
-        if (res.modifiedCount === 1) {
+      ).then((res) => {
+        if (res.result.nModified === 1 && res.result.ok) {
           return {
             status: true,
             message: `Elemento ${item} actulizado correctamente`,

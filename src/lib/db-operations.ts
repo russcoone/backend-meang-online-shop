@@ -95,8 +95,13 @@
 //   return await database.collection(collection).countDocuments();
 // };
 
-import { Db, SortDirection } from 'mongodb';
+//NOTA IMPORTANTE EN FUTURO SI LAS VERSIONES DE MONGODB Y TYPECRIP NO SON LAS MISMAS AL CURSO
+//EN SORT AQUE PONER ANTENCION O SORTDIRECION OPSERVAR EN LA LECCION 119 0 162
+// MUY IMPORTANTE ---------
+
+import { Db } from 'mongodb';
 import { IPaginationOptions } from '../interfaces/pagination-options.interface';
+import database from './database';
 
 /**
  * Obtener el ID que vamos a utilizar en el nuevo usuario
@@ -107,15 +112,12 @@ import { IPaginationOptions } from '../interfaces/pagination-options.interface';
 export const asignDocumentId = async (
   database: Db,
   collection: string,
-  sort: { key: string; order: SortDirection } = {
-    key: 'registerDate',
-    order: 1,
-  }
+  sort: object = { key: 'registerDate', order: -1 }
 ) => {
   const lastElement = await database
     .collection(collection)
     .find()
-    .sort(sort.key, sort.order as SortDirection)
+    .sort({ registerDate: -1 })
     .limit(1)
     .toArray();
   if (lastElement.length === 0) {
@@ -198,26 +200,26 @@ export const countElements = async (
   return await database.collection(collection).countDocuments(filter);
 };
 
-export const randomItems = async (
-  database: Db,
-  collection: string,
-  filter: object = {},
-  items = 10
-): Promise<Array<object>> => {
-  return new Promise((resolve) => {
-    const pipeline = [{ $match: filter }, { $sample: { size: items } }];
-    resolve(database.collection(collection).aggregate(pipeline).toArray());
-  });
-};
+// export const randomItems = async (
+//   database: Db,
+//   collection: string,
+//   filter: object = {},
+//   items = 10
+// ): Promise<Array<object>> => {
+//   return new Promise((resolve) => {
+//     const pipeline = [{ $match: filter }, { $sample: { size: items } }];
+//     resolve(database.collection(collection).aggregate(pipeline).toArray());
+//   });
+// };
 
-// Gestión del stock de productos
-export const manageStockUpdate = async (
-  database: Db,
-  collection: string,
-  filter: object,
-  updateObject: object
-) => {
-  return await database
-    .collection(collection)
-    .updateOne(filter, { $inc: updateObject });
-};
+// // Gestión del stock de productos
+// export const manageStockUpdate = async (
+//   database: Db,
+//   collection: string,
+//   filter: object,
+//   updateObject: object
+// ) => {
+//   return await database
+//     .collection(collection)
+//     .updateOne(filter, { $inc: updateObject });
+// };

@@ -1,4 +1,3 @@
-import { filter } from 'compression';
 import { Db } from 'mongodb';
 import { countElements } from './db-operations';
 

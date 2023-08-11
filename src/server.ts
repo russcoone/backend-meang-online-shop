@@ -8,6 +8,7 @@ import schema from './schema';
 import expressPlayground from 'graphql-playground-middleware-express';
 import { ApolloServer } from 'apollo-server-express';
 import Database from './lib/database';
+import chalk from 'chalk';
 
 //configuracion de las variables de enterno (lectura)
 
@@ -54,7 +55,12 @@ async function init() {
     {
       port: PORT,
     },
-    () => console.log(`http://localhost:${PORT} API MEANG - Onli Shop`)
+    () => {
+      console.log('=================SERVER API GRAPHQL============');
+      console.log(`STATUS: ${chalk.greenBright('ONLINE')}`);
+      console.log(`MESSAGE: ${chalk.greenBright('API MEANG - ONLINE SHOP')}`);
+      console.log(`http://localhost:${PORT} API MEANG - Onli Shop`);
+    }
   );
 }
 
