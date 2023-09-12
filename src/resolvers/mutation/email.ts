@@ -8,6 +8,7 @@ import bcrypt from 'bcrypt';
 import { error } from 'console';
 import Mailservice from '../../services/mail.service';
 import PasswordService from '../../services/password.service';
+import { IUser } from '../../interfaces/user.interface';
 
 const resolversMailMutation: IResolvers = {
   Mutation: {
@@ -32,12 +33,12 @@ const resolversMailMutation: IResolvers = {
         _,
         { id, user: { birthday, password } },
         { token, db }
-      ).unblock(true);
+      ).unblock(true, false);
     },
     async resetPassword(_, { email }, { db }) {
       return new PasswordService(_, { user: { email } }, { db }).sendMail();
     },
-    async chandePassword(_, { id, password }, { db, token }) {
+    async changePassword(_, { id, password }, { db, token }) {
       //verificar el token
       const verify = verifyToken(token, id);
       if (verify?.status === false) {
@@ -63,7 +64,7 @@ function verifyToken(token: string, id: string) {
     };
   }
   // si el token es valido asignamos la informacio
-  const user = Object.values(checkToken)[0];
+  const user = Object.values(checkToken)[0] as IUser;
   if (user.id !== id) {
     return {
       status: false,

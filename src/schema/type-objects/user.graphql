@@ -12,7 +12,7 @@ type User {
     email: String!
     password: String
     registerDate: String!
-    birthday: String!
+    birthday: String
     role: Role!
     active: Boolean
 

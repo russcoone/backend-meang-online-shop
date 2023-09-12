@@ -27,8 +27,8 @@ export enum EXPIRETIME {
 }
 export enum ACTIVE_VALUES_FILTER {
   ALL = 'ALL',
-  INACTIVE = 'INACTIVE',
   ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
 }
 
 export enum SUBSCRIPTIONS_EVENT {

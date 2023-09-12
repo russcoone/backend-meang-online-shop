@@ -1,4 +1,9 @@
-import { COLLECTION, EXPIRETIME, MESSAGES } from '../config/constants';
+import {
+  ACTIVE_VALUES_FILTER,
+  COLLECTION,
+  EXPIRETIME,
+  MESSAGES,
+} from '../config/constants';
 import { IContextData } from '../interfaces/context-data.interface';
 import { IUser } from '../interfaces/user.interface';
 import { asignDocumentId, findOneElement } from '../lib/db-operations';
@@ -14,7 +19,15 @@ class UsersService extends ResolverOperationsService {
     super(root, variables, context);
   }
   // Lista de usuarios
-  async items() {
+  async items(active: string = ACTIVE_VALUES_FILTER.ACTIVE) {
+    console.log('servive', active);
+    let filter: object = { active: { $ne: false } };
+    if (active === ACTIVE_VALUES_FILTER.ALL) {
+      filter = {};
+    } else if (active === ACTIVE_VALUES_FILTER.INACTIVE) {
+      filter = { active: false };
+    }
+
     const page = this.getVariables().pagination?.page;
     const itemsPage = this.getVariables().pagination?.itemsPage;
 
@@ -22,7 +35,8 @@ class UsersService extends ResolverOperationsService {
       this.collection,
       'usuarios',
       page,
-      itemsPage
+      itemsPage,
+      filter
     );
     return {
       info: result.info,
@@ -189,7 +203,7 @@ class UsersService extends ResolverOperationsService {
       message: result.message,
     };
   }
-  async unblock(unblock: boolean) {
+  async unblock(unblock: boolean, admin: boolean) {
     const id = this.getVariables().id;
     const user = this.getVariables().user;
     if (!this.checkData(String(id) || '')) {
@@ -207,7 +221,8 @@ class UsersService extends ResolverOperationsService {
       };
     }
     let update = { active: unblock };
-    if (unblock) {
+    if (unblock && !admin) {
+      console.log('Soy clinte y estoycmabiando la contraseña');
       update = Object.assign(
         {},
         { active: true },
