@@ -102,6 +102,7 @@
 import { Db } from 'mongodb';
 import { IPaginationOptions } from '../interfaces/pagination-options.interface';
 import database from './database';
+import { resolve } from 'path';
 
 /**
  * Obtener el ID que vamos a utilizar en el nuevo usuario
@@ -198,6 +199,20 @@ export const countElements = async (
   filter: object = {}
 ) => {
   return await database.collection(collection).countDocuments(filter);
+};
+
+export const randomItems = async (
+  database: Db,
+  collection: string,
+  filter: object = {},
+  items: number = 10
+): Promise<Array<object>> => {
+  return new Promise(async (resolve) => {
+    const pipeline = [{ $match: filter }, { $sample: { size: items } }];
+    resolve(
+      await database.collection(collection).aggregate(pipeline).toArray()
+    );
+  });
 };
 
 // export const randomItems = async (

@@ -38,7 +38,7 @@ async function init() {
     context,
   });
 
-  //await server.start();
+  await server.start();
 
   server.applyMiddleware({ app });
 
@@ -50,7 +50,7 @@ async function init() {
   );
 
   const httpServer = createServer(app);
-  const PORT = process.env.PORT || 4200;
+  const PORT = process.env.PORT || 2400;
   httpServer.listen(
     {
       port: PORT,

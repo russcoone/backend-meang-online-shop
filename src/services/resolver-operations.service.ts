@@ -14,11 +14,9 @@ import { pagination } from '../lib/pagiantion';
 import { StringLiteralType } from 'typescript';
 
 class ResolverOperationsService {
-  private root: object;
   private variables: IVariables; // revisar este punto por algunos errores
   private context: IContextData;
   constructor(root: object, variables: IVariables, context: IContextData) {
-    this.root = root;
     this.variables = variables;
     this.context = context;
   }

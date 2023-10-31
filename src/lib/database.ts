@@ -26,7 +26,7 @@ class Database {
         useUnifiedTopology: true,
       });
 
-      this.db = mongoClient.db();
+      this.db = mongoClient.db('');
       // Mensaje visual con el estado
       console.log('================DATABASE================');
       console.log(`STATUS: ${chalk.greenBright('ONLINE')}`);
