@@ -90,7 +90,6 @@ class ShopProductsService extends ResolverOperationsService {
     random = false,
     otherFilters: object = {}
   ) {
-    console.log(active);
     let filter: object = { active: { $ne: false } };
     if (active === ACTIVE_VALUES_FILTER.ALL) {
       filter = {};
@@ -98,9 +97,8 @@ class ShopProductsService extends ResolverOperationsService {
       filter = { active: false };
     }
     if (platform[0] !== '-1' && platform !== undefined) {
-      filter = { ...filter, ...{ platform_id: platform } };
+      filter = { ...filter, ...{ platform_id: { $in: platform } } };
     }
-    console.log(filter);
 
     if (JSON.stringify(otherFilters) !== JSON.stringify({ otherFilters })) {
       filter = { ...filter, ...otherFilters };
