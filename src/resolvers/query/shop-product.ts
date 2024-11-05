@@ -58,6 +58,10 @@ const resolversShopProductsQuery: IResolvers = {
         context
       ).items(active, ['-1'], random, otherFilters);
     },
+    shopProductDetails(_, { id }, context) {
+      console.log(id, typeof id);
+      return new ShopProductsService(_, { id }, context).details();
+    }
   },
 };
 

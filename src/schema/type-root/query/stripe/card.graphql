@@ -1,0 +1,13 @@
+type Query {
+    card(customer: ID!, card: ID!): ResultStripeCard
+    "lista de targetas de credito asociadas al cliente seleccion"
+     cards(
+        customer: ID!,
+        "Para limitar los resultados de 1 a 100 (incluido)"
+        limit: Int = 5,
+        "Para especificar la primera posicion posterio a la seleccion del usuario"
+        startingAfter: ID = "",
+        "Terminar antes de este usuario (para mostrar los anteriores)"
+        endingBefore: ID = ""
+    ): ResultStripeCard
+}

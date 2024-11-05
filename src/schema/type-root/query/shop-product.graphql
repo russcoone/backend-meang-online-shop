@@ -39,5 +39,6 @@ type Query {
         topPrice: Float = -1,
         lastUnits: Int = -1,
         random: Boolean = false): ResultShopProduct
+    shopProductDetails(id: Int!): ResultShopProduct  
     
 }

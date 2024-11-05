@@ -7,5 +7,7 @@ type ShopProduct {
     active: Boolean!
     price: Float!
     stock: Int!
+    talla: String!
+    relationalProducts:[ShopProduct]
 
 }

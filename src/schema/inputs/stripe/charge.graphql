@@ -1,0 +1,12 @@
+input ChargeInput {
+    token: String
+    "cantidad apagar en formato string, para convertirlo en entero cero decimar"
+    amount: String!
+    "resultado del pedido"
+    description: String!
+    "cliente(ID)"
+    customer: ID!
+    "divisas"
+    currency: CurrencyEnum = MXN
+
+}

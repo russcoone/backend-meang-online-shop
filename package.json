@@ -59,6 +59,7 @@
     "propertable": "^0.2.0",
     "property-sort": "^2.1.0",
     "slugify": "^1.4.0",
+    "stripe": "^15.12.0",
     "typescript": "^4.9.4"
   },
   "devDependencies": {
