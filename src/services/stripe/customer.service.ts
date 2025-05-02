@@ -1,4 +1,3 @@
-import { error } from "console";
 import { IStripeCustomer } from "../../interfaces/striper/customer.interface";
 import StripeApi, { STRIPE_ACTION, STRIPE_OBJECTS } from "../../lib/stripe-api";
 import { IUser } from "../../interfaces/user.interface";

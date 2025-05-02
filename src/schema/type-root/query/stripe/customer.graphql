@@ -6,8 +6,7 @@ type Query {
         "Para especificar la primera posicion posterio a la seleccion del usuario"
         startingAfter: ID = "",
         "Terminar antes de este usuario (para mostrar los anteriores)"
-        endingBefore: ID = ""
-    ): ResultStripeCustomer
+        endingBefore: ID = ""): ResultStripeCustomer
 
     "Obtener detalles del cliente seleccionado"
     customer(

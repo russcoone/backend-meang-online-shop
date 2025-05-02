@@ -74,9 +74,10 @@
 
 // export default ShopProductsService;
 
-import { randomItems } from './../lib/db-operations';
+import { manageStockUpdate, randomItems } from './../lib/db-operations';
 import { ACTIVE_VALUES_FILTER, COLLECTION } from '../config/constants';
 import ResolverOperationsService from './resolver-operations.service';
+import { IStock } from '../interfaces/stock.interface';
 
 class ShopProductsService extends ResolverOperationsService {
   collection = COLLECTION.SHOP_PRODUCT;
@@ -145,8 +146,25 @@ class ShopProductsService extends ResolverOperationsService {
     };
   }
   async details() {
-     const result = await this.get(this.collection);
-     return {status: result.status, message: result.message,  shopProduct: result.item}
+    const result = await this.get(this.collection);
+    return { status: result.status, message: result.message, shopProduct: result.item }
+  }
+  async updateStock(updateList: Array<IStock>) {
+    try {
+      updateList.map(async (item: IStock) => {
+        console.log(item);
+        await manageStockUpdate(
+          this.getDb(),
+          COLLECTION.SHOP_PRODUCT,
+          { id: +item.id },
+          { stock: item.increment }
+        )
+      });
+      return true;
+    } catch (e) {
+      console.log(e);
+      return false;
+    }
   }
 }
 
