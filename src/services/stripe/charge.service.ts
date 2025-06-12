@@ -1,14 +1,18 @@
+import { Db } from "mongodb";
+import { IStock } from "../../interfaces/stock.interface";
 import { IStripeCharge } from "../../interfaces/striper/charge.interface";
 import { IPayment } from "../../interfaces/striper/payment.interface";
 import StripeApi, { STRIPE_ACTION, STRIPE_OBJECTS } from "../../lib/stripe-api";
 import StripeCardService from "./card.service";
 import StripeCustomerService from "./customer.service";
+import { PubSub } from "apollo-server-express";
+import ShopProductsService from "../shop-product.service";
 
 class StripeChargeService extends StripeApi {
     private async getClient(customer: string) {
         return new StripeCustomerService().get(customer)
     }
-    async order(payment: IPayment) {
+    async order(payment: IPayment, stockChange: Array<IStock>, pubsub: PubSub, db: Db) {
         //comprobar que existe el cliente
         const userData = await this.getClient(payment.customer);
         if (userData && (userData).status) {
@@ -63,6 +67,7 @@ class StripeChargeService extends StripeApi {
             STRIPE_ACTION.CREATE,
             payment,
         ).then((result: object) => {
+            new ShopProductsService({}, {}, { db }).updateStock(stockChange, pubsub);
             return {
                 status: true,
                 message: 'Pago realizado correctamente',

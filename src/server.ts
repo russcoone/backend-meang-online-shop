@@ -6,7 +6,7 @@ import { createServer } from 'http';
 import environment from './config/environments';
 import schema from './schema';
 import expressPlayground from 'graphql-playground-middleware-express';
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer, PubSub } from 'apollo-server-express';
 import Database from './lib/database';
 import chalk from 'chalk';
 
@@ -19,7 +19,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 async function init() {
   const app = express();
-
+  const pubsub = new PubSub();
   app.use('*', cors());
   app.use(compression());
 
@@ -29,7 +29,7 @@ async function init() {
 
   const context = async ({ req, connection }: IContext) => {
     const token = req ? req.headers.authorization : connection.authorization;
-    return { db, token };
+    return { db, token, pubsub };
   };
 
   const server = new ApolloServer({
@@ -50,6 +50,7 @@ async function init() {
   );
 
   const httpServer = createServer(app);
+  server.installSubscriptionHandlers(httpServer);
   const PORT = process.env.PORT || 2400;
   httpServer.listen(
     {
@@ -59,7 +60,8 @@ async function init() {
       console.log('=================SERVER API GRAPHQL============');
       console.log(`STATUS: ${chalk.greenBright('ONLINE')}`);
       console.log(`MESSAGE: ${chalk.greenBright('API MEANG - ONLINE SHOP')}`);
-      console.log(`http://localhost:${PORT} API MEANG - Onli Shop`);
+      console.log(`GraphQL Server => @: http://localhost:${PORT}/graphql`);
+      console.log(`WS Connection => @://localhost:${PORT}/graphql`)
     }
   );
 }

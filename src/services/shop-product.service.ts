@@ -74,10 +74,11 @@
 
 // export default ShopProductsService;
 
-import { manageStockUpdate, randomItems } from './../lib/db-operations';
-import { ACTIVE_VALUES_FILTER, COLLECTION } from '../config/constants';
+import { findOneElement, manageStockUpdate, randomItems } from './../lib/db-operations';
+import { ACTIVE_VALUES_FILTER, COLLECTION, SUBSCRIPTIONS_EVENT } from '../config/constants';
 import ResolverOperationsService from './resolver-operations.service';
 import { IStock } from '../interfaces/stock.interface';
+import { PubSub } from 'apollo-server-express';
 
 class ShopProductsService extends ResolverOperationsService {
   collection = COLLECTION.SHOP_PRODUCT;
@@ -149,16 +150,26 @@ class ShopProductsService extends ResolverOperationsService {
     const result = await this.get(this.collection);
     return { status: result.status, message: result.message, shopProduct: result.item }
   }
-  async updateStock(updateList: Array<IStock>) {
+  async updateStock(updateList: Array<IStock>, pubsub: PubSub) {
     try {
       updateList.map(async (item: IStock) => {
         console.log(item);
+        const itemDetails = await findOneElement(
+          this.getDb(), COLLECTION.SHOP_PRODUCT,
+          { id: +item.id }
+        );
+        if (item.increment < 0 && ((item.increment + itemDetails.stock) < 0)) {
+          item.increment = -itemDetails.stock;
+
+        }
         await manageStockUpdate(
           this.getDb(),
           COLLECTION.SHOP_PRODUCT,
           { id: +item.id },
           { stock: item.increment }
-        )
+        );
+        itemDetails.stock += item.increment
+        pubsub.publish(SUBSCRIPTIONS_EVENT.UPDATE_STOCK_PRODUCT, { selectProductStockUpdate: itemDetails })
       });
       return true;
     } catch (e) {
