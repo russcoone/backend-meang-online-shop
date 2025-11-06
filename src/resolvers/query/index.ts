@@ -1,3 +1,4 @@
+import resolverDashboardQuery from './dashborad';
 import resolversGenreQuery from './genre';
 import resolversShopProductsQuery from './shop-product';
 import queryStripeResolvers from './stripe';
@@ -11,7 +12,8 @@ const queryResolver = GMR.merge([
   resolversShopProductsQuery,
   resolversGenreQuery,
   resolversTagQuery,
-  queryStripeResolvers
+  queryStripeResolvers,
+  resolverDashboardQuery
 ]);
 
 export default queryResolver;
