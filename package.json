@@ -28,8 +28,8 @@
   },
   "homepage": "https://github.com/russcoone/backend-meang-online-shop#readme",
   "engines": {
-    "node": "22.21.1",
-    "npm": "10.9.4"
+    "node": "24.11.0",
+    "npm": "11.6.1"
   },
   "dependencies": {
     "@graphql-tools/load-files": "^6.6.1",
