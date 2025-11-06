@@ -51,7 +51,7 @@ async function init() {
 
   const httpServer = createServer(app);
   server.installSubscriptionHandlers(httpServer);
-  const PORT = process.env.PORT || 2400;
+  const PORT = process.env.PORT || 8080;
   httpServer.listen(
     {
       port: PORT,
