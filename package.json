@@ -5,7 +5,7 @@
   "main": "build/server.js",
   "scripts": {
     "start": "node build/server.js",
-    "buil": "tsc -p .",
+    "buil": "tsc -p . && ncp src/schema build/schema",
     "dev": "nodemon \"src/server.ts\" --exec \"ts-node\" \"src/server.ts\" -e ts,graphql,json"
   },
   "repository": {
@@ -28,8 +28,8 @@
   },
   "homepage": "https://github.com/russcoone/backend-meang-online-shop#readme",
   "engines": {
-    "node": ">=12.0.0",
-    "npm": ">=6.0.0"
+    "node": ">=24.11.0",
+    "npm": ">=11.6.1"
   },
   "dependencies": {
     "@graphql-tools/load-files": "^6.6.1",
