@@ -1,6 +1,6 @@
 {
   "name": "backend-meang",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "Proyecyo bakend API Graphql TIneda Online",
   "main": "build/server.js",
   "scripts": {
