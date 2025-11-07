@@ -14,13 +14,12 @@ import chalk from 'chalk';
 
 if (process.env.NODE_ENV !== 'production') {
   const env = environment;
-  console.log(env);
 }
 
 async function init() {
   const app = express();
   const pubsub = new PubSub();
-  app.use('*', cors());
+  app.use(cors());
   app.use(compression());
 
   const database = new Database();
@@ -52,7 +51,7 @@ async function init() {
   const httpServer = createServer(app);
   server.installSubscriptionHandlers(httpServer);
   const PORT = process.env.PORT || 2400;
-  app.listen(
+  httpServer.listen(
     {
       port: PORT,
     },
