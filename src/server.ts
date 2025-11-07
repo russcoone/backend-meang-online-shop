@@ -43,7 +43,7 @@ async function init() {
   server.applyMiddleware({ app });
 
   app.get(
-    '/',
+    'PORT',
     expressPlayground({
       endpoint: '/graphql',
     })
@@ -51,7 +51,7 @@ async function init() {
 
   const httpServer = createServer(app);
   server.installSubscriptionHandlers(httpServer);
-  const PORT = process.env.PORT || 8080;
+  const PORT = process.env.PORT || 2400;
   httpServer.listen(
     {
       port: PORT,
