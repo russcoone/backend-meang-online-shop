@@ -51,18 +51,18 @@ async function init() {
   const httpServer = createServer(app);
   server.installSubscriptionHandlers(httpServer);
   const PORT = process.env.PORT || 2400;
-  // httpServer.listen(
-  //   {
-  //     port: PORT,
-  //   },
-  //   () => {
-  //     console.log('=================SERVER API GRAPHQL============');
-  //     console.log(`STATUS: ${chalk.greenBright('ONLINE')}`);
-  //     console.log(`MESSAGE: ${chalk.greenBright('API MEANG - ONLINE SHOP')}`);
-  //     console.log(`GraphQL Server => @: http://localhost:${PORT}/graphql`);
-  //     console.log(`WS Connection => @://localhost:${PORT}/graphql`)
-  //   }
-  // );
+  httpServer.listen(
+    {
+      port: PORT,
+    },
+    () => {
+      console.log('=================SERVER API GRAPHQL============');
+      console.log(`STATUS: ${chalk.greenBright('ONLINE')}`);
+      console.log(`MESSAGE: ${chalk.greenBright('API MEANG - ONLINE SHOP')}`);
+      console.log(`GraphQL Server => @: http://localhost:${PORT}/graphql`);
+      console.log(`WS Connection => @://localhost:${PORT}/graphql`)
+    }
+  );
 }
 
 init();
